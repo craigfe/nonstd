@@ -5,6 +5,22 @@ include Printf
 
 module List = struct
 
+  (* This module takes code from Janestreet's Core library:
+
+    Copyright (C) 2008-
+      Jane Street Holding, LLC
+      1 New York Plaza, 33rd Floor
+      New York, NY 10004
+      USA
+
+    email: opensource@janestreet.com
+
+    The contents of some files in this distribution was derived from external
+    sources with compatible licenses. The original copyright and license
+    notice was preserved in the affected files.
+
+    See https://github.com/janestreet/core/blob/master/COPYRIGHT.txt
+  *)
   include ListLabels
 
   let hd_exn = hd
