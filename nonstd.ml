@@ -282,6 +282,17 @@ module Option = struct
     match o with
     | Some o -> o
     | None -> raise (No_value msg)
+  let map o ~f =
+    match o with
+    | None -> None
+    | Some s -> Some (f s)
+  let return s = Some s
+  let bind o ~f = 
+    match o with
+    | None -> None
+    | Some s -> f s
+  let (>>=) x f = bind x ~f
+
 
 end
 
