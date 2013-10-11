@@ -286,6 +286,10 @@ module Option = struct
     match o with
     | None -> None
     | Some s -> Some (f s)
+  let value_map o ~default ~f =
+    match o with
+    | Some s -> f s
+    | None -> default
   let return s = Some s
   let bind o ~f = 
     match o with
