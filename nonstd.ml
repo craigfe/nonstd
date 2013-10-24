@@ -305,7 +305,7 @@ module Int = struct
   type t = int
   let compare (a: int) (b: int) = compare a b
   let to_string i = string_of_int i
-  let of_string s = try Some (string_of_int s) with _ -> None
+  let of_string s = try Some (int_of_string s) with _ -> None
 
 end
 module Float = struct
@@ -313,5 +313,5 @@ module Float = struct
   type t = float
   let compare (a: float) (b: float) = compare a b
   let to_string i = string_of_float i
-  let of_string s = try Some (string_of_float s) with _ -> None
+  let of_string s = try Some (float_of_string s) with _ -> None
 end
