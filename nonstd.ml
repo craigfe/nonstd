@@ -261,6 +261,8 @@ module List = struct
     loop l []
   let filter_map l ~f = List.rev (rev_filter_map l ~f)
 
+  let filter_opt l = filter_map l ~f:(fun x -> x)
+
   let partition_map t ~f =
     let rec loop t fst snd =
       match t with
