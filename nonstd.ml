@@ -273,6 +273,35 @@ module List = struct
         | `Snd y -> loop t fst (y :: snd)
     in
     loop t [] []
+
+
+  let split_n t_orig n =
+    if n <= 0 then
+      ([], t_orig)
+    else
+      let rec loop n t accum =
+        if n = 0 then
+          (List.rev accum, t)
+        else
+          match t with
+          | [] -> (t_orig, []) (* in this case, t_orig = List.rev accum *)
+          | hd :: tl -> loop (n - 1) tl (hd :: accum)
+      in
+      loop n t_orig []
+  let take t n = fst (split_n t n)
+  let drop t n = snd (split_n t n)
+
+  let split_while xs ~f =
+    let rec loop acc = function
+    | hd :: tl when f hd -> loop (hd :: acc) tl
+    | t -> (rev acc, t)
+    in
+    loop [] xs
+
+  let take_while t ~f = fst (split_while t ~f)
+  let drop_while t ~f = snd (split_while t ~f)
+
+
 end
 
 module Array = ArrayLabels
