@@ -27,24 +27,31 @@
 
 
 let build () =
-  in_build_directory (fun () ->
-      chain [
-        "pwd";
-        "cp ../nonstd.ml .";
-        "ocamlfind ocamlc  -c nonstd.ml -o nonstd.cmo";
-        "ocamlfind ocamlopt  -c nonstd.ml  -annot -bin-annot -o nonstd.cmx";
-        "ocamlc nonstd.cmo -a -o nonstd.cma";
-        "ocamlopt nonstd.cmx -a -o nonstd.cmxa";
-        "ocamlopt nonstd.cmxa nonstd.a -shared -o nonstd.cmxs";
-      ];
-    )
+in_build_directory (fun () ->
+chain 
+[
+    "cp ../nonstd.ml .";
+    "ocamlfind ocamlc  -c nonstd.ml -o nonstd.cmo";
+    "ocamlfind ocamlopt  -c nonstd.ml  -annot -bin-annot -o nonstd.cmx";
+    "ocamlc nonstd.cmo -a -o nonstd.cma";
+    "ocamlopt nonstd.cmx -a -o nonstd.cmxa";
+    "ocamlopt nonstd.cmxa nonstd.a -shared -o nonstd.cmxs";
 
+]
+
+)
 
 let install () =
     in_build_directory (fun () ->
         chain [
           "ocamlfind install nonstd ../META nonstd.cmx nonstd.cmo nonstd.cma nonstd.cmi nonstd.cmxa nonstd.cmxs nonstd.a nonstd.o"
         ])
+
+
+let uninstall () =
+    chain [
+      "ocamlfind remove nonstd"
+    ]
 
 
 let merlinize () =
@@ -59,36 +66,48 @@ let build_doc () =
     in_build_directory (fun () ->
         chain [
           "mkdir -p doc";
-                       sprintf "ocamlfind ocamldoc  -charset UTF-8 -keep-code -colorize-code -html nonstd.ml -d doc/";
+                         sprintf "ocamlfind ocamldoc  -charset UTF-8 -keep-code -colorize-code -html nonstd.ml -d doc/";
         ])
 
 
 let name = "nonstd"
 
-let () =
-  match args with
-  | _ :: "build" :: [] ->
-    say "Building.";
-    build ();
-    say "Done."
-  | _ :: "build_doc" :: [] ->
-    say "Building the documentation.";
-    build_doc ()
-  | _ :: "install" :: [] ->
-    say "Installing";
-    install ();
-  | _ :: "uninstall" :: [] ->
-    chain [
-      sprintf "ocamlfind remove %s" name
-    ]
-  | _ :: "merlinize" :: [] -> merlinize ()
-  | _ :: "clean" :: []
-  | _ :: "C" :: [] ->
-    cmdf "rm -fr _build"
-  | _ :: "help" :: [] ->
-    say "usage: ocaml %s [build|build_doc|install|uninstall|clean|merlinize]" Sys.argv.(0);
-  | _ ->
-    say "usage: ocaml %s [build|build_doc|install|uninstall|clean|merlinize]" Sys.argv.(0);
-    exit 1
-    
+let () = begin
+match args with
+| _ :: "build" :: [] ->(
+say "Building";
+build ();
+say "Done."
+)
+| _ :: "build_doc" :: [] ->(
+say "Building Documentation";
+build_doc ();
+say "Done."
+)
+| _ :: "install" :: [] ->(
+say "Installing";
+install ();
+say "Done."
+)
+| _ :: "uninstall" :: [] ->(
+say "Uninstalling";
+uninstall ();
+say "Done."
+)
+| _ :: "merlinize" :: [] ->(
+say "Updating `.merlin` file";
+merlinize ();
+say "Done."
+)
+| _ :: "clean" :: [] ->(
+say "Cleaning";
+cmdf "rm -fr _build";
+say "Done."
+)
+| _ ->(
+say "usage: ocaml %s [build|install|uninstall|clean|build_doc|melinize]" Sys.argv.(0)
+)
+
+end
+
 
