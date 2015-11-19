@@ -155,14 +155,84 @@ module List = struct
   let fold_right l ~f ~init =
     fold ~f:(fun a b -> f b a) ~init (List.rev l)
 
-  let rev_mapi l ~f =
+  let rev_mapi l ~f ~i =
     let rec loop i acc = function
     | [] -> acc
     | h :: t -> loop (i + 1) (f i h :: acc) t
     in
-    loop 0 [] l
+    loop i [] l
 
-  let mapi l ~f = List.rev (rev_mapi l ~f)
+  let rec count_mapi ~f l ctr =
+    match l with
+    | [] -> []
+    | [x1] ->
+      let f1 = f ctr x1 in
+      [f1]
+    | [x1; x2] ->
+      let f1 = f ctr x1 in
+      let f2 = f (ctr + 1) x2 in
+      [f1; f2]
+    | [x1; x2; x3] ->
+      let f1 = f ctr x1 in
+      let f2 = f (ctr + 1) x2 in
+      let f3 = f (ctr + 2) x3 in
+      [f1; f2; f3]
+    | [x1; x2; x3; x4] ->
+      let f1 = f ctr x1 in
+      let f2 = f (ctr + 1) x2 in
+      let f3 = f (ctr + 2) x3 in
+      let f4 = f (ctr + 3) x4 in
+      [f1; f2; f3; f4]
+    | x1 :: x2 :: x3 :: x4 :: x5 :: tl ->
+      let f1 = f ctr x1 in
+      let f2 = f (ctr + 1) x2 in
+      let f3 = f (ctr + 2) x3 in
+      let f4 = f (ctr + 3) x4 in
+      let f5 = f (ctr + 4) x5 in
+      f1 :: f2 :: f3 :: f4 :: f5 ::
+        (if ctr > 5000
+          then rev_mapi ~f ~i:(ctr + 5) tl
+          else count_mapi ~f tl (ctr + 5))
+
+  let mapi l ~f = count_mapi ~f l 0
+
+  let map2_slow l1 l2 ~f = List.rev (rev_map2 ~f l1 l2)
+
+  let rec count_map2_exn ~f l1 l2 ctr =
+    match l1, l2 with
+    | [], [] -> []
+    | [x1], [y1] ->
+      let f1 = f x1 y1 in
+      [f1]
+    | [x1; x2], [y1; y2] ->
+      let f1 = f x1 y1 in
+      let f2 = f x2 y2 in
+      [f1; f2]
+    | [x1; x2; x3], [y1; y2; y3] ->
+      let f1 = f x1 y1 in
+      let f2 = f x2 y2 in
+      let f3 = f x3 y3 in
+      [f1; f2; f3]
+    | [x1; x2; x3; x4], [y1; y2; y3; y4] ->
+      let f1 = f x1 y1 in
+      let f2 = f x2 y2 in
+      let f3 = f x3 y3 in
+      let f4 = f x4 y4 in
+      [f1; f2; f3; f4]
+    | x1 :: x2 :: x3 :: x4 :: x5 :: tl1,
+      y1 :: y2 :: y3 :: y4 :: y5 :: tl2 ->
+      let f1 = f x1 y1 in
+      let f2 = f x2 y2 in
+      let f3 = f x3 y3 in
+      let f4 = f x4 y4 in
+      let f5 = f x5 y5 in
+      f1 :: f2 :: f3 :: f4 :: f5 ::
+        (if ctr > 1000
+          then map2_slow ~f tl1 tl2
+          else count_map2_exn ~f tl1 tl2 (ctr + 1))
+    | _, _ -> failwith "count_map2"
+
+  let map2_exn l1 l2 ~f = count_map2_exn ~f l1 l2 0
 
   let iteri l ~f =
     ignore (fold l ~init:0 ~f:(fun i x -> f i x; i + 1))
