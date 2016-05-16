@@ -235,7 +235,7 @@ module List = struct
   let map2_exn l1 l2 ~f = count_map2_exn ~f l1 l2 0
 
   let iteri l ~f =
-    ignore (fold l ~init:0 ~f:(fun i x -> f i x; i + 1))
+    ignore (fold l ~init:0 ~f:(fun i x -> let () = f i x in i + 1))
 
   let foldi t ~f ~init =
     snd (fold t ~init:(0, init) ~f:(fun (i, acc) v -> (i + 1, f i acc v)))
