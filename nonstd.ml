@@ -72,7 +72,7 @@ module List = struct
     in
     loop t
 
-  let find_exn t ~f = List.find t ~f
+  let find_exn t ~f = List.find f t
 
   let findi t ~f =
     let rec loop i t =
