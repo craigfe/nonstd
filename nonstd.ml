@@ -371,6 +371,21 @@ module List = struct
   let take_while t ~f = fst (split_while t ~f)
   let drop_while t ~f = snd (split_while t ~f)
 
+  let remove_and_assoc el list =
+    let rec loop acc = function
+      | []                      -> raise Not_found
+      | (e, v) :: t when e = el -> v, (List.rev acc @ t)
+      | h :: t                  -> loop (h :: acc) t
+    in
+    loop [] list
+
+  let remove_and_assq el list =
+    let rec loop acc = function
+      | []                       -> raise Not_found
+      | (e, v) :: t when e == el -> v, (List.rev acc @ t)
+      | h :: t                   -> loop (h :: acc) t
+    in
+    loop [] list
 
 end
 
