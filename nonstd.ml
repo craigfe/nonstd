@@ -390,7 +390,7 @@ module List = struct
       in
       loop [] list
 
-    let remove_and_get el list =
+    let remove_and_getq el list =
       let rec loop acc = function
         | []                       -> raise Not_found
         | (e, v) :: t when e == el -> v, (List.rev acc @ t)
