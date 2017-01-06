@@ -426,7 +426,7 @@ module Option = struct
     | Some s -> f s
     | None -> default
   let return s = Some s
-  let bind o ~f = 
+  let bind o ~f =
     match o with
     | None -> None
     | Some s -> f s
