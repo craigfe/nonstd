@@ -384,16 +384,16 @@ module List = struct
 
     let remove_and_get el list =
       let rec loop acc = function
-        | []                      -> raise Not_found
-        | (e, v) :: t when e = el -> v, (List.rev acc @ t)
+        | []                      -> None
+        | (e, v) :: t when e = el -> Some (v, (List.rev acc @ t))
         | h :: t                  -> loop (h :: acc) t
       in
       loop [] list
 
     let remove_and_getq el list =
       let rec loop acc = function
-        | []                       -> raise Not_found
-        | (e, v) :: t when e == el -> v, (List.rev acc @ t)
+        | []                       -> None
+        | (e, v) :: t when e == el -> Some (v, (List.rev acc @ t))
         | h :: t                   -> loop (h :: acc) t
       in
       loop [] list
