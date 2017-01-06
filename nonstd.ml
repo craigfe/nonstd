@@ -371,6 +371,40 @@ module List = struct
   let take_while t ~f = fst (split_while t ~f)
   let drop_while t ~f = snd (split_while t ~f)
 
+  module Assoc = struct
+
+    let get e l = try Some (assoc e l) with Not_found -> None
+    let getq e l = try Some (assq e l) with Not_found -> None
+
+    let mem = mem_assoc
+    let memq = mem_assq
+
+    let remove_assoc = remove_assoc
+    let remove_assq = remove_assq
+
+    let remove_and_get el list =
+      let rec loop acc = function
+        | []                      -> None
+        | (e, v) :: t when e = el -> Some (v, (List.rev acc @ t))
+        | h :: t                  -> loop (h :: acc) t
+      in
+      loop [] list
+
+    let remove_and_getq el list =
+      let rec loop acc = function
+        | []                       -> None
+        | (e, v) :: t when e == el -> Some (v, (List.rev acc @ t))
+        | h :: t                   -> loop (h :: acc) t
+      in
+      loop [] list
+  end
+
+  let assoc = `Use_sub_module
+  let assq = `Use_sub_module
+  let mem_assoc = `Use_sub_module
+  let mem_assq = `Use_sub_module
+  let remove_assoc = `Use_sub_module
+  let remove_assq = `Use_sub_module
 
 end
 
@@ -392,7 +426,7 @@ module Option = struct
     | Some s -> f s
     | None -> default
   let return s = Some s
-  let bind o ~f = 
+  let bind o ~f =
     match o with
     | None -> None
     | Some s -> f s
