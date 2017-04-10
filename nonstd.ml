@@ -421,6 +421,12 @@ module Option = struct
     match o with
     | None -> None
     | Some s -> Some (f s)
+
+  let iter: 'a option -> f:('a -> unit) -> unit = fun o ~f ->
+    match o with
+    | None -> ()
+    | Some s -> f s
+
   let value_map o ~default ~f =
     match o with
     | Some s -> f s
