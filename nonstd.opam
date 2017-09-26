@@ -7,10 +7,9 @@ authors: [
   "Sebastien Mondet <seb@modnet.org>"
   "Leonid Rozenberg <leonidr@gmail.com>"
 ]
-build: ["ocaml" "please.ml" "build"]
-remove: [
-  ["ocaml" "please.ml" "uninstall"]
+build: [
+  ["jbuilder" "build" "--only" "nonstd" "--root" "." "-j" jobs "@install"]
 ]
-depends: ["ocamlfind"]
-available: ocaml-version >= "4.00.0"
-install: ["ocaml" "please.ml" "install"]
+depends: ["ocamlfind" "jbuilder" {build}]
+available: ocaml-version >= "4.02.0"
+

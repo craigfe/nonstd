@@ -1,6 +1,4 @@
 
-external (|>) : 'a -> ('a -> 'b) -> 'b = "%revapply"
-
 include Printf
 
 module List = struct
@@ -410,7 +408,17 @@ end
 
 module Array = ArrayLabels
 
-module Option = struct
+module Option : sig
+  exception No_value of string
+  val value : 'a option -> default:'a -> 'a
+  val value_exn : 'a option -> msg:string -> 'a
+  val map : 'a option -> f:('a -> 'b) -> 'b option
+  val iter : 'a option -> f:('a -> unit) -> unit
+  val value_map : 'a option -> default:'b -> f:('a -> 'b) -> 'b
+  val return : 'a -> 'a option
+  val bind : 'a option -> f:('a -> 'b option) -> 'b option
+  val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option
+end = struct
   exception No_value of string
   let value o ~default = match o with Some s -> s | None -> default
   let value_exn o ~msg =
@@ -422,7 +430,12 @@ module Option = struct
     | None -> None
     | Some s -> Some (f s)
 
-  let iter: 'a option -> f:('a -> unit) -> unit = fun o ~f ->
+  let maybe o ~f =
+    match o with
+    | None -> ()
+    | Some s -> f s
+
+  let iter o ~f =
     match o with
     | None -> ()
     | Some s -> f s
