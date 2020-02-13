@@ -43,8 +43,6 @@ module List = struct
         n (length t)
     | Some a -> a
 
-  let fold ~init ~f l = fold_left ~init ~f l
-
   let rev_filter t ~f =
     let rec find ~f accu = function
     | [] -> accu
@@ -429,11 +427,6 @@ end = struct
     match o with
     | None -> None
     | Some s -> Some (f s)
-
-  let maybe o ~f =
-    match o with
-    | None -> ()
-    | Some s -> f s
 
   let iter o ~f =
     match o with
