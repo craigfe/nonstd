@@ -8,8 +8,8 @@ authors: [
   "Leonid Rozenberg <leonidr@gmail.com>"
 ]
 build: [
-  ["jbuilder" "build" "--only" "nonstd" "--root" "." "-j" jobs "@install"]
+  ["dune" "build" "-p" name "-j" jobs]
 ]
-depends: ["ocamlfind" "jbuilder" {build}]
+depends: ["ocamlfind" "dune" {build & >= "1.0"}]
 available: ocaml-version >= "4.02.0"
 
